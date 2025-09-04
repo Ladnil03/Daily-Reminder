@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Reminder - Stay Organized</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="manifest" href="pwa/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+</head>
+<body class="fade-in">
+    <nav class="navbar sticky">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-bell"></i>
+                <span>Daily Reminder</span>
+            </div>
+            <div class="nav-links">
+                <a href="about.html" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                <a href="contact.html" class="nav-link"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="login.html" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-background">
+            <div class="hero-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                <span>Free & Open Source</span>
+            </div>
+            <h1 class="hero-title">Never Miss Important Tasks</h1>
+            <p class="hero-subtitle">A beautiful, offline-capable reminder app with smart notifications, custom sounds, and seamless synchronization across all your devices.</p>
+            <div class="hero-buttons">
+                <a href="register.html" class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i>
+                    <span>Get Started Free</span>
+                </a>
+                <a href="login.html" class="btn btn-secondary btn-large">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Sign In</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4.9★</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-subtitle">Everything you need to stay organized and never miss important tasks</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>PWA Ready</h3>
+                    <p>Install on any device and use offline with full functionality</p>
+                    <div class="feature-tags">
+                        <span class="tag">Offline</span>
+                        <span class="tag">Cross-platform</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Smart Notifications</h3>
+                    <p>Get notified with custom sounds and visual alerts</p>
+                    <div class="feature-tags">
+                        <span class="tag">Custom Sounds</span>
+                        <span class="tag">Visual Alerts</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>Dark Mode</h3>
+                    <p>Easy on the eyes with automatic theme switching</p>
+                    <div class="feature-tags">
+                        <span class="tag">Auto Switch</span>
+                        <span class="tag">Eye Friendly</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Calendar View</h3>
+                    <p>Visualize your reminders in calendar and list formats</p>
+                    <div class="feature-tags">
+                        <span class="tag">Multiple Views</span>
+                        <span class="tag">Drag & Drop</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Smart Search</h3>
+                    <p>Find reminders quickly with advanced filtering options</p>
+                    <div class="feature-tags">
+                        <span class="tag">Instant Search</span>
+                        <span class="tag">Filters</span>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Progress Tracking</h3>
+                    <p>Track completion rates and productivity insights</p>
+                    <div class="feature-tags">
+                        <span class="tag">Analytics</span>
+                        <span class="tag">Insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add to Home Screen Prompt -->
+    <div id="install-prompt" class="install-prompt hidden">
+        <div class="install-content">
+            <div class="install-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="install-text">
+                <h3>Install Daily Reminder</h3>
+                <p>Get quick access and offline functionality</p>
+            </div>
+            <div class="install-actions">
+                <button id="install-btn" class="btn btn-primary btn-small">Install</button>
+                <button id="install-dismiss" class="btn btn-ghost btn-small">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/sw-register.js"></script>
+</body>
+</html>

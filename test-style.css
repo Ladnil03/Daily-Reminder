@@ -1,0 +1,11 @@
+/* Simple test CSS */
+body {
+    background-color: red !important;
+    color: white !important;
+}
+
+.nav-logo {
+    background-color: blue !important;
+    color: yellow !important;
+    padding: 10px !important;
+}

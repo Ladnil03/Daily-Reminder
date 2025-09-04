@@ -1,0 +1,16 @@
+{
+  "name": "Daily Reminder",
+  "short_name": "Reminder",
+  "description": "A simple, offline-capable reminder app that works everywhere",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196F3",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [],
+  "screenshots": [],
+  "shortcuts": []
+}
