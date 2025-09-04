@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create APK - Daily Reminder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #6366f1;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        .step h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            background: #6366f1;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+        .btn:hover {
+            background: #4f46e5;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Create Android APK for Daily Reminder</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> PWAs cannot directly create APK files. You need to convert the web app to a native Android app.
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Deploy to HTTPS (Required)</h3>
+            <p>First, deploy your app to a secure HTTPS server:</p>
+            <p><strong>Option A - Netlify (Recommended):</strong></p>
+            <p>1. Go to <a href="https://netlify.com" target="_blank" class="btn">Netlify.com</a></p>
+            <p>2. Drag & drop your <code>Daily-reminder</code> folder</p>
+            <p>3. Get your HTTPS URL (e.g., <code>https://amazing-app-123.netlify.app</code>)</p>
+            
+            <p><strong>Option B - Vercel:</strong></p>
+            <p>1. Go to <a href="https://vercel.com" target="_blank" class="btn">Vercel.com</a></p>
+            <p>2. Import your project from GitHub</p>
+            <p>3. Get your HTTPS URL</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Convert to APK</h3>
+            <p>Use PWA Builder to create a real Android APK:</p>
+            <p>1. Go to <a href="https://www.pwabuilder.com" target="_blank" class="btn">PWABuilder.com</a></p>
+            <p>2. Enter your HTTPS URL from Step 1</p>
+            <p>3. Click "Start" → "Build My PWA"</p>
+            <p>4. Select "Android" platform</p>
+            <p>5. Configure settings:</p>
+            <ul>
+                <li>App Name: Daily Reminder</li>
+                <li>Package Name: com.dailyreminder.app</li>
+                <li>Version: 1.0.0</li>
+            </ul>
+            <p>6. Click "Generate" and download APK</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Install APK on Phone</h3>
+            <p>1. Transfer APK file to your phone</p>
+            <p>2. Enable "Install from Unknown Sources" in Android settings</p>
+            <p>3. Tap APK file to install</p>
+            <p>4. Open the installed app (not browser shortcut)</p>
+        </div>
+
+        <div class="success">
+            <strong>✅ After APK Installation:</strong><br>
+            • Background notifications will work<br>
+            • Login will persist after closing app<br>
+            • Notification sounds will play<br>
+            • True native app experience
+        </div>
+
+        <div class="step">
+            <h3>Alternative: Quick APK Generators</h3>
+            <p>If PWA Builder doesn't work, try these:</p>
+            <p>
+                <a href="https://appmaker.xyz/pwa-to-apk" target="_blank" class="btn">AppMaker.xyz</a>
+                <a href="https://gonative.io" target="_blank" class="btn">GoNative.io</a>
+                <a href="https://webintoapp.com" target="_blank" class="btn">WebIntoApp.com</a>
+            </p>
+        </div>
+
+        <div class="warning">
+            <strong>🔧 Troubleshooting:</strong><br>
+            • If you only get shortcuts, the app isn't deployed to HTTPS<br>
+            • Background features only work with real APK, not PWA shortcuts<br>
+            • Make sure to install the APK file, not add to home screen
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="btn">← Back to Daily Reminder</a>
+        </div>
+    </div>
+</body>
+</html>

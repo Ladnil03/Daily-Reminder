@@ -560,66 +560,7 @@ body {
     color: var(--gray-300);
 }
 
-/* Install Prompt */
-.install-prompt {
-    position: fixed;
-    bottom: var(--spacing-lg);
-    left: var(--spacing-lg);
-    right: var(--spacing-lg);
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    z-index: 1000;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: var(--transition);
-}
 
-.install-prompt:not(.hidden) {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.install-content {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
-}
-
-.install-icon {
-    width: 50px;
-    height: 50px;
-    background: var(--primary-color);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 1.25rem;
-}
-
-.install-text {
-    flex: 1;
-}
-
-.install-text h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-color);
-}
-
-.install-text p {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-}
-
-.install-actions {
-    display: flex;
-    gap: var(--spacing-sm);
-}
 
 .hidden {
     display: none !important;
