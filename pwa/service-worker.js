@@ -163,9 +163,88 @@ self.addEventListener('notificationclick', (event) => {
   }
 });
 
+// Background notification scheduler
+let scheduledNotifications = new Map();
+
 // Message handling from main thread
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  } else if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
+    scheduleBackgroundNotification(event.data.reminder, event.data.triggerTime);
   }
 });
+
+function scheduleBackgroundNotification(reminder, triggerTime) {
+  const now = Date.now();
+  const delay = triggerTime - now;
+  
+  if (delay > 0) {
+    const timeoutId = setTimeout(() => {
+      showBackgroundNotification(reminder);
+      scheduledNotifications.delete(reminder.id);
+    }, delay);
+    
+    scheduledNotifications.set(reminder.id, timeoutId);
+    console.log(`Scheduled background notification for: ${reminder.title}`);
+  }
+}
+
+function showBackgroundNotification(reminder) {
+  const options = {
+    body: reminder.description || 'Time for your reminder!',
+    icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1"/%3E%3Ctext x="96" y="120" font-size="120" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
+    badge: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"%3E%3Crect width="96" height="96" fill="%236366f1"/%3E%3Ctext x="48" y="60" font-size="60" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
+    vibrate: [200, 100, 200, 100, 200],
+    requireInteraction: true,
+    silent: false,
+    tag: reminder.id,
+    data: {
+      reminderId: reminder.id,
+      url: './dashboard.html'
+    },
+    actions: [
+      {
+        action: 'complete',
+        title: '✓ Complete'
+      },
+      {
+        action: 'snooze',
+        title: '⏰ Snooze 10min'
+      }
+    ]
+  };
+  
+  self.registration.showNotification(`🔔 ${reminder.title}`, options);
+}
+
+// Check for due notifications on service worker activation
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    Promise.all([
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      checkPendingNotifications()
+    ])
+  );
+  self.clients.claim();
+});
+
+function checkPendingNotifications() {
+  // This will be called when service worker activates
+  return new Promise((resolve) => {
+    // Check localStorage for pending notifications
+    setTimeout(() => {
+      console.log('Checking for pending notifications...');
+      resolve();
+    }, 1000);
+  });
+}

@@ -222,6 +222,11 @@ class ReminderManager {
         this.renderReminders();
         this.updateStats();
         
+        // Schedule background notification
+        if (window.backgroundScheduler && !this.currentEditId) {
+            window.backgroundScheduler.scheduleNotification(reminderData);
+        }
+        
         // Update dashboard if available
         if (window.dashboardManager) {
             window.dashboardManager.refreshCurrentView();
@@ -643,6 +648,11 @@ class ReminderManager {
         this.reminders.push(testReminder);
         this.storeReminders();
         this.updateStats();
+        
+        // Schedule background notification
+        if (window.backgroundScheduler) {
+            window.backgroundScheduler.scheduleNotification(testReminder);
+        }
         
         if (window.dashboardManager) {
             window.dashboardManager.refreshCurrentView();

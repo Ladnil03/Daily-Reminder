@@ -223,6 +223,8 @@ class AuthManager {
 
     logout() {
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('backgroundReminders');
         this.currentUser = null;
         window.location.href = 'index.html';
     }
@@ -232,16 +234,48 @@ class AuthManager {
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('currentUser') || 'null');
+        try {
+            const stored = localStorage.getItem('currentUser');
+            if (!stored) return null;
+            
+            const userData = JSON.parse(stored);
+            
+            if (!userData.timestamp) {
+                const newUserData = {
+                    user: userData,
+                    timestamp: Date.now(),
+                    expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
+                };
+                localStorage.setItem('currentUser', JSON.stringify(newUserData));
+                return userData;
+            }
+            
+            if (Date.now() > userData.expires) {
+                this.logout();
+                return null;
+            }
+            
+            return userData.user;
+        } catch (e) {
+            return null;
+        }
     }
 
     setCurrentUser(user) {
         this.currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        const userData = {
+            user: user,
+            timestamp: Date.now(),
+            expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
+        };
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        localStorage.setItem('isLoggedIn', 'true');
     }
 
     isLoggedIn() {
-        return this.currentUser !== null;
+        const isLoggedInFlag = localStorage.getItem('isLoggedIn');
+        const currentUser = this.getCurrentUser();
+        return isLoggedInFlag === 'true' && currentUser !== null;
     }
 
     handlePageAccess() {
