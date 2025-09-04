@@ -352,9 +352,14 @@ class ReminderManager {
     }
 
     triggerReminder(reminder) {
-        // Show notification
+        // Show browser notification
         if (window.notificationManager) {
             window.notificationManager.showNotification(reminder);
+        }
+
+        // Show interactive popup
+        if (window.notificationPopupManager) {
+            window.notificationPopupManager.showReminderPopup(reminder);
         }
 
         // Play sound
@@ -381,10 +386,15 @@ class ReminderManager {
         // Initialize audio context
         await this.initializeAudio();
         
+        // Stop any existing sound
+        this.stopCurrentSound();
+        
         if (reminder.soundType === 'custom' && reminder.customSound) {
             try {
                 const audio = new Audio(reminder.customSound);
                 audio.volume = 0.7;
+                audio.loop = true;
+                window.currentAudio = audio;
                 await audio.play();
                 console.log('Custom reminder sound played');
             } catch (e) {
@@ -393,6 +403,22 @@ class ReminderManager {
             }
         } else {
             await this.playDefaultBeep();
+        }
+    }
+    
+    stopCurrentSound() {
+        try {
+            if (window.currentAudio) {
+                window.currentAudio.pause();
+                window.currentAudio.currentTime = 0;
+                window.currentAudio = null;
+            }
+            if (window.currentOscillator) {
+                window.currentOscillator.stop();
+                window.currentOscillator = null;
+            }
+        } catch (e) {
+            console.log('Error stopping sound:', e);
         }
     }
 

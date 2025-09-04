@@ -1,16 +1,37 @@
 {
-  "name": "Daily Reminder",
-  "short_name": "Reminder",
-  "description": "A simple, offline-capable reminder app that works everywhere",
-  "start_url": "/",
+  "name": "Daily Reminder - Task Manager",
+  "short_name": "Daily Reminder",
+  "description": "A powerful offline-capable reminder and task management app",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2196F3",
+  "theme_color": "#6366f1",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities"],
+  "categories": ["productivity", "utilities", "lifestyle"],
   "lang": "en",
   "dir": "ltr",
-  "icons": [],
-  "screenshots": [],
-  "shortcuts": []
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1'/%3E%3Ctext x='96' y='120' font-size='120' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1'/%3E%3Ctext x='256' y='320' font-size='320' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Reminder",
+      "short_name": "Add",
+      "description": "Quickly add a new reminder",
+      "url": "./dashboard.html"
+    }
+  ],
+  "prefer_related_applications": false
 }

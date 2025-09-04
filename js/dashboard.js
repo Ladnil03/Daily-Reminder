@@ -343,6 +343,11 @@ class DashboardManager {
             reminder.completed = completed;
             reminder.completedAt = completed ? new Date().toISOString() : null;
             
+            // Stop sound when task is completed
+            if (completed && window.reminderManager) {
+                window.reminderManager.stopCurrentSound();
+            }
+            
             window.reminderManager.storeReminders();
             window.reminderManager.updateStats();
             

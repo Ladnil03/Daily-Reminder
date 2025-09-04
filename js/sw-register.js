@@ -32,18 +32,61 @@ class ServiceWorkerManager {
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt available');
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             deferredPrompt = e;
             
-            // Show install button
-            this.showInstallButton(deferredPrompt);
+            // Show install button after a delay
+            setTimeout(() => {
+                this.showInstallButton(deferredPrompt);
+            }, 3000);
         });
 
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
+        window.addEventListener('appinstalled', (e) => {
+            console.log('PWA was installed successfully');
             this.hideInstallButton();
+            this.showInstallSuccess();
         });
+        
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('PWA is already installed');
+        }
+        
+        // For iOS Safari - show manual install instructions
+        if (this.isIOS() && !this.isInStandaloneMode()) {
+            setTimeout(() => {
+                this.showIOSInstallInstructions();
+            }, 5000);
+        }
+    }
+    
+    isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent);
+    }
+    
+    isInStandaloneMode() {
+        return window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    }
+    
+    showIOSInstallInstructions() {
+        const instructions = document.createElement('div');
+        instructions.innerHTML = `
+            <div style="background: #007AFF; color: white; padding: 1rem; border-radius: 10px; position: fixed; bottom: 20px; left: 20px; right: 20px; z-index: 2000; text-align: center;">
+                <p><strong>Install this app:</strong></p>
+                <p>Tap <span style="font-size: 1.2em;">⬆️</span> then "Add to Home Screen"</p>
+                <button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 5px; margin-top: 0.5rem;">Got it</button>
+            </div>
+        `;
+        document.body.appendChild(instructions);
+        
+        // Auto remove after 10 seconds
+        setTimeout(() => {
+            if (instructions.parentElement) {
+                instructions.remove();
+            }
+        }, 10000);
     }
 
     showInstallButton(deferredPrompt) {
@@ -52,24 +95,26 @@ class ServiceWorkerManager {
         if (!installBtn) {
             installBtn = document.createElement('button');
             installBtn.id = 'install-btn';
-            installBtn.textContent = '📱 Install App';
-            installBtn.className = 'btn-secondary install-btn';
+            installBtn.innerHTML = '📱 Install App';
+            installBtn.className = 'btn-primary install-btn';
             
-            // Add styles
+            // Add styles for better visibility
             installBtn.style.cssText = `
                 position: fixed;
                 bottom: 20px;
                 right: 20px;
                 z-index: 1000;
-                background: var(--primary-color, #2196F3);
+                background: linear-gradient(135deg, #6366f1, #4f46e5);
                 color: white;
                 border: none;
-                padding: 1rem;
+                padding: 1rem 1.5rem;
                 border-radius: 50px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
                 cursor: pointer;
-                font-size: 0.9rem;
+                font-size: 1rem;
+                font-weight: 600;
                 transition: all 0.3s ease;
+                animation: pulse 2s infinite;
             `;
             
             document.body.appendChild(installBtn);
@@ -77,15 +122,43 @@ class ServiceWorkerManager {
 
         installBtn.style.display = 'block';
         
-        installBtn.addEventListener('click', async () => {
+        installBtn.onclick = async () => {
             if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                deferredPrompt = null;
-                this.hideInstallButton();
+                try {
+                    await deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`Install prompt result: ${outcome}`);
+                    
+                    if (outcome === 'accepted') {
+                        console.log('PWA installed successfully');
+                        this.showInstallSuccess();
+                    }
+                    
+                    deferredPrompt = null;
+                    this.hideInstallButton();
+                } catch (error) {
+                    console.error('Install prompt failed:', error);
+                }
             }
-        });
+        };
+    }
+    
+    showInstallSuccess() {
+        const toast = document.createElement('div');
+        toast.innerHTML = '✅ App installed successfully!';
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            z-index: 2000;
+            font-weight: 600;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
 
     hideInstallButton() {
