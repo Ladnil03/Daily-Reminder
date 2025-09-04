@@ -2,8 +2,8 @@
   "name": "Daily Reminder - Task Manager",
   "short_name": "Daily Reminder",
   "description": "A powerful offline-capable reminder and task management app",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
@@ -30,7 +30,7 @@
       "name": "Add Reminder",
       "short_name": "Add",
       "description": "Quickly add a new reminder",
-      "url": "./dashboard.html"
+      "url": "/dashboard.html"
     }
   ],
   "prefer_related_applications": false

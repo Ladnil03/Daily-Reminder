@@ -1,25 +1,30 @@
 // Service Worker for offline functionality
-const CACHE_NAME = 'daily-reminder-v1';
+const CACHE_NAME = 'daily-reminder-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/login.html',
-  '/register.html',
-  '/dashboard.html',
-  '/about.html',
-  '/contact.html',
-  '/css/index.css',
-  '/css/auth.css',
-  '/css/dashboard.css',
-  '/css/about.css',
-  '/css/contact.css',
-  '/js/theme.js',
-  '/js/auth.js',
-  '/js/reminders.js',
-  '/js/notifications.js',
-  '/js/sw-register.js',
-  '/js/contact.js',
-  '/pwa/manifest.json'
+  './',
+  './index.html',
+  './login.html',
+  './register.html',
+  './dashboard.html',
+  './about.html',
+  './contact.html',
+  './css/index.css',
+  './css/auth.css',
+  './css/dashboard.css',
+  './css/about.css',
+  './css/contact.css',
+  './js/theme.js',
+  './js/auth.js',
+  './js/reminders.js',
+  './js/notifications.js',
+  './js/notification-popup.js',
+  './js/dashboard.js',
+  './js/calendar.js',
+  './js/dragdrop.js',
+  './js/bulk-operations.js',
+  './js/sw-register.js',
+  './js/contact.js',
+  './pwa/manifest.json'
 ];
 
 // Install event - cache resources
@@ -34,6 +39,7 @@ self.addEventListener('install', (event) => {
         console.log('Cache install failed:', error);
       })
   );
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache when offline
@@ -41,9 +47,16 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
+        // Return cached version if available
         if (response) {
           return response;
+        }
+        
+        // For navigation requests, try to serve index.html if offline
+        if (event.request.mode === 'navigate') {
+          return fetch(event.request).catch(() => {
+            return caches.match('./index.html');
+          });
         }
         
         return fetch(event.request).then((response) => {
@@ -61,13 +74,12 @@ self.addEventListener('fetch', (event) => {
             });
 
           return response;
+        }).catch(() => {
+          // Return index.html for failed navigation requests
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
         });
-      })
-      .catch(() => {
-        // Return offline page for navigation requests
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
       })
   );
 });
@@ -86,6 +98,7 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  self.clients.claim();
 });
 
 // Background sync for offline actions
@@ -137,7 +150,7 @@ self.addEventListener('notificationclick', (event) => {
   if (event.action === 'explore') {
     // Open the app
     event.waitUntil(
-      clients.openWindow('/dashboard.html')
+      clients.openWindow('./dashboard.html')
     );
   } else if (event.action === 'close') {
     // Just close the notification
@@ -145,7 +158,7 @@ self.addEventListener('notificationclick', (event) => {
   } else {
     // Default action - open the app
     event.waitUntil(
-      clients.openWindow('/')
+      clients.openWindow('./')
     );
   }
 });
