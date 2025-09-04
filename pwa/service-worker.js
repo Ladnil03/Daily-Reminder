@@ -195,27 +195,46 @@ function showBackgroundNotification(reminder) {
     body: reminder.description || 'Time for your reminder!',
     icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1"/%3E%3Ctext x="96" y="120" font-size="120" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
     badge: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"%3E%3Crect width="96" height="96" fill="%236366f1"/%3E%3Ctext x="48" y="60" font-size="60" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
-    vibrate: [200, 100, 200, 100, 200],
+    vibrate: [500, 200, 500, 200, 500],
     requireInteraction: true,
     silent: false,
-    tag: reminder.id,
+    renotify: true,
+    tag: 'daily-reminder-' + reminder.id,
+    timestamp: Date.now(),
     data: {
       reminderId: reminder.id,
-      url: './dashboard.html'
+      url: './dashboard.html',
+      timestamp: Date.now()
     },
     actions: [
       {
         action: 'complete',
-        title: '✓ Complete'
+        title: '✓ Complete',
+        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%2310b981" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/%3E%3C/svg%3E'
       },
       {
         action: 'snooze',
-        title: '⏰ Snooze 10min'
+        title: '⏰ Snooze 10min',
+        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="%23f59e0b" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/%3E%3C/svg%3E'
       }
     ]
   };
   
   self.registration.showNotification(`🔔 ${reminder.title}`, options);
+  
+  // Play notification sound using Audio API in service worker
+  playNotificationSound();
+}
+
+function playNotificationSound() {
+  // Service worker can't directly play audio, but can trigger client to play
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'PLAY_NOTIFICATION_SOUND'
+      });
+    });
+  });
 }
 
 // Check for due notifications on service worker activation
