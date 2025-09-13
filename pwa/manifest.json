@@ -2,8 +2,8 @@
   "name": "Daily Reminder",
   "short_name": "Reminder",
   "description": "Never miss important tasks with smart notifications",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
@@ -24,8 +24,8 @@
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' fill='%236366f1' rx='28'/%3E%3Ctext x='64' y='85' font-size='56' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
-      "sizes": "128x128",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'%3E%3Crect width='144' height='144' fill='%236366f1' rx='32'/%3E%3Ctext x='72' y='95' font-size='64' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "144x144",
       "type": "image/svg+xml",
       "purpose": "any"
     },
@@ -47,7 +47,7 @@
       "name": "Add Reminder",
       "short_name": "Add",
       "description": "Quickly add a new reminder",
-      "url": "./dashboard.html"
+      "url": "/dashboard.html"
     }
   ],
   "prefer_related_applications": false

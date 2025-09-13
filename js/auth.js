@@ -305,6 +305,9 @@ class AuthManager {
     }
 
     handlePageAccess() {
+        // Force check storage on page load
+        this.currentUser = this.getCurrentUser();
+        
         const currentPage = window.location.pathname.split('/').pop() || window.location.href.split('/').pop();
         console.log('Current page:', currentPage, 'Logged in:', this.isLoggedIn());
         
