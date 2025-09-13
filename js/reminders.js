@@ -219,13 +219,8 @@ class ReminderManager {
         this.renderReminders();
         this.updateStats();
         
-        // Schedule background notification
-        this.scheduleBackgroundNotification(reminderData);
-        
-        // Enhanced PWA scheduling
-        if (window.PWA) {
-            window.PWA.scheduleReminder(reminderData);
-        }
+        // Schedule notification
+        this.scheduleNotification(reminderData);
         
         // Update dashboard if available
         if (window.dashboardManager) {
@@ -356,64 +351,20 @@ class ReminderManager {
         }
     }
 
-    scheduleBackgroundNotification(reminder) {
-        if ('serviceWorker' in navigator && window.notificationManager) {
-            const triggerTime = new Date(reminder.datetime).getTime();
-            window.notificationManager.scheduleBackgroundNotification(reminder, triggerTime);
-        }
-        
-        // Enhanced PWA scheduling with sound
-        this.schedulePWANotification(reminder);
-    }
-    
-    schedulePWANotification(reminder) {
+    scheduleNotification(reminder) {
         const triggerTime = new Date(reminder.datetime).getTime();
         const delay = triggerTime - Date.now();
         
-        if (delay > 0) {
-            // Schedule through service worker for background
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.active.postMessage({
-                        type: 'SCHEDULE_NOTIFICATION',
-                        reminder: reminder,
-                        triggerTime: triggerTime
-                    });
-                });
-            }
-            
-            // Local scheduling with sound
-            setTimeout(() => {
-                this.playNotificationSound();
-                if (Notification.permission === 'granted') {
-                    new Notification(reminder.title, {
-                        body: reminder.description || 'Reminder time!',
-                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="84" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E'
-                    });
-                }
-            }, delay);
+        // Schedule with PWA support
+        if (window.PWA) {
+            window.PWA.scheduleReminder(reminder);
         }
-    }
-    
-    playNotificationSound() {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-        } catch (e) {
-            console.log('Could not play notification sound:', e);
+        
+        // Fallback local scheduling
+        if (delay > 0) {
+            setTimeout(() => {
+                this.triggerReminder(reminder);
+            }, delay);
         }
     }
 
