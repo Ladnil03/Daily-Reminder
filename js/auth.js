@@ -64,12 +64,7 @@ class AuthManager {
             logoutBtn.addEventListener('click', () => this.logout());
         }
         
-        // Test user button
-        const testUserBtn = document.getElementById('create-test-user');
-        if (testUserBtn) {
-            console.log('Test user button found, adding listener');
-            testUserBtn.addEventListener('click', () => this.createTestUser());
-        }
+
         
         // Remember me functionality
         const rememberMe = document.getElementById('remember-me');
@@ -330,57 +325,10 @@ class AuthManager {
             userNameElement.textContent = `Welcome, ${this.currentUser.username}`;
         }
         
-        // Add debug info
-        const debugElement = document.getElementById('debug-info');
-        if (debugElement) {
-            const users = this.getStoredUsers();
-            debugElement.innerHTML = `
-                <p>Debug Info:</p>
-                <p>Users in storage: ${users.length}</p>
-                <p>Current user: ${this.currentUser ? this.currentUser.username : 'None'}</p>
-                <p>LocalStorage available: ${typeof(Storage) !== "undefined"}</p>
-            `;
-        }
+
     }
 
-    createTestUser() {
-        console.log('Creating test user');
-        const testUser = {
-            id: 'test-user-123',
-            username: 'test',
-            email: 'test@example.com',
-            password: 'test123',
-            createdAt: new Date().toISOString(),
-            preferences: {
-                theme: 'light',
-                notifications: true,
-                soundEnabled: true
-            }
-        };
-        
-        const users = this.getStoredUsers();
-        // Remove existing test user if any
-        const filteredUsers = users.filter(u => u.username !== 'test');
-        filteredUsers.push(testUser);
-        
-        localStorage.setItem('users', JSON.stringify(filteredUsers));
-        console.log('Test user created. Username: test, Password: test123');
-        
-        // Fill form with test credentials
-        const usernameField = document.getElementById('username');
-        const passwordField = document.getElementById('password');
-        if (usernameField && passwordField) {
-            usernameField.value = 'test';
-            passwordField.value = 'test123';
-            
-            // Trigger input events for validation
-            usernameField.dispatchEvent(new Event('input'));
-            passwordField.dispatchEvent(new Event('input'));
-        }
-        
-        this.showSuccess('Test user created! Username: test, Password: test123');
-        this.updateUI();
-    }
+
     
     setLoadingState(loading) {
         this.isLoading = loading;

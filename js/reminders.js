@@ -20,9 +20,6 @@ class ReminderManager {
         if (addBtn) {
             addBtn.addEventListener('click', () => this.openModal());
         }
-        
-        // Add quick test reminder button (for testing)
-        this.addQuickTestButton();
 
         // Modal close buttons
         const closeBtn = document.getElementById('modal-close');
@@ -225,6 +222,11 @@ class ReminderManager {
         // Schedule background notification
         this.scheduleBackgroundNotification(reminderData);
         
+        // Enhanced PWA scheduling
+        if (window.PWA) {
+            window.PWA.scheduleReminder(reminderData);
+        }
+        
         // Update dashboard if available
         if (window.dashboardManager) {
             window.dashboardManager.refreshCurrentView();
@@ -323,20 +325,20 @@ class ReminderManager {
     }
 
     startReminderChecker() {
-        // Check every 10 seconds for testing, then every minute
+        // Check every minute for due reminders
         setInterval(() => {
             this.checkDueReminders();
-        }, 10000);
+        }, 60000);
         
-        // Also check immediately
-        setTimeout(() => this.checkDueReminders(), 2000);
+        // Check immediately
+        setTimeout(() => this.checkDueReminders(), 1000);
     }
 
     checkDueReminders() {
         const now = new Date();
         const dueReminders = this.reminders.filter(reminder => {
             const reminderTime = new Date(reminder.datetime);
-            // Allow 1 minute tolerance for testing
+            // Check if reminder time has passed
             return reminderTime <= now && reminder.isActive && !reminder.completed;
         });
 
@@ -358,6 +360,60 @@ class ReminderManager {
         if ('serviceWorker' in navigator && window.notificationManager) {
             const triggerTime = new Date(reminder.datetime).getTime();
             window.notificationManager.scheduleBackgroundNotification(reminder, triggerTime);
+        }
+        
+        // Enhanced PWA scheduling with sound
+        this.schedulePWANotification(reminder);
+    }
+    
+    schedulePWANotification(reminder) {
+        const triggerTime = new Date(reminder.datetime).getTime();
+        const delay = triggerTime - Date.now();
+        
+        if (delay > 0) {
+            // Schedule through service worker for background
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.active.postMessage({
+                        type: 'SCHEDULE_NOTIFICATION',
+                        reminder: reminder,
+                        triggerTime: triggerTime
+                    });
+                });
+            }
+            
+            // Local scheduling with sound
+            setTimeout(() => {
+                this.playNotificationSound();
+                if (Notification.permission === 'granted') {
+                    new Notification(reminder.title, {
+                        body: reminder.description || 'Reminder time!',
+                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="84" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E'
+                    });
+                }
+            }, delay);
+        }
+    }
+    
+    playNotificationSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (e) {
+            console.log('Could not play notification sound:', e);
         }
     }
 
@@ -625,45 +681,7 @@ class ReminderManager {
         return this.reminders.find(r => r.id === this.currentEditId);
     }
     
-    addQuickTestButton() {
-        // Add a quick test button for development
-        const testBtn = document.createElement('button');
-        testBtn.textContent = '🔔 Test Sound Now';
-        testBtn.className = 'btn btn-secondary btn-small';
-        testBtn.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 1000;';
-        testBtn.onclick = () => this.createTestReminder();
-        document.body.appendChild(testBtn);
-    }
-    
-    createTestReminder() {
-        const testReminder = {
-            id: 'test-' + Date.now(),
-            title: 'Test Reminder',
-            description: 'This is a test reminder to check sound',
-            datetime: new Date(Date.now() + 5000).toISOString(), // 5 seconds from now
-            priority: 'high',
-            category: 'personal',
-            soundType: 'default',
-            userId: window.authManager.currentUser.id,
-            createdAt: new Date().toISOString(),
-            isActive: true,
-            completed: false
-        };
-        
-        this.reminders.push(testReminder);
-        this.storeReminders();
-        this.updateStats();
-        
-        // Schedule background notification
-        this.scheduleBackgroundNotification(testReminder);
-        
-        if (window.dashboardManager) {
-            window.dashboardManager.refreshCurrentView();
-        }
-        
-        this.showSuccessToast('Test reminder created! Will trigger in 5 seconds.');
-        console.log('Test reminder created:', testReminder);
-    }
+
 }
 
 // Initialize reminder manager when DOM is loaded

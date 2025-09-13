@@ -1,34 +1,33 @@
 // Service Worker for offline functionality
-const CACHE_NAME = 'daily-reminder-v3';
+const CACHE_NAME = 'daily-reminder-v4';
 const urlsToCache = [
-  './',
-  './index.html',
-  './login.html',
-  './register.html',
-  './dashboard.html',
-  './about.html',
-  './contact.html',
-  './css/index.css',
-  './css/auth.css',
-  './css/dashboard.css',
-  './css/about.css',
-  './css/contact.css',
-  './js/theme.js',
-  './js/auth.js',
-  './js/reminders.js',
-  './js/notifications.js',
-  './js/notification-popup.js',
-  './js/dashboard.js',
-  './js/calendar.js',
-  './js/dragdrop.js',
-  './js/bulk-operations.js',
-  './js/sw-register.js',
-  './js/contact.js',
-  './js/mobile-fixes.js',
-  './pwa/manifest.json',
-  './assets/default.mp3',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  '/',
+  '/index.html',
+  '/login.html',
+  '/register.html',
+  '/dashboard.html',
+  '/about.html',
+  '/contact.html',
+  '/css/index.css',
+  '/css/auth.css',
+  '/css/dashboard.css',
+  '/css/about.css',
+  '/css/contact.css',
+  '/js/theme.js',
+  '/js/auth.js',
+  '/js/reminders.js',
+  '/js/notifications.js',
+  '/js/notification-popup.js',
+  '/js/dashboard.js',
+  '/js/calendar.js',
+  '/js/dragdrop.js',
+  '/js/bulk-operations.js',
+  '/js/sw-register.js',
+  '/js/contact.js',
+  '/js/mobile-fixes.js',
+  '/js/sw-messaging.js',
+  '/pwa/manifest.json',
+  '/assets/default.mp3'
 ];
 
 
@@ -300,30 +299,15 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache:', CACHE_NAME);
-        // Cache essential files first
-        const essentialFiles = [
-          './',
-          './index.html',
-          './login.html',
-          './register.html',
-          './dashboard.html',
-          './pwa/manifest.json'
-        ];
-        
-        return cache.addAll(essentialFiles).then(() => {
-          // Cache remaining files
-          return Promise.allSettled(
-            urlsToCache.filter(url => !essentialFiles.includes(url))
-              .map(url => cache.add(new Request(url, { cache: 'reload' })))
-          );
+        return cache.addAll(urlsToCache).catch(error => {
+          console.log('Some files failed to cache:', error);
+          // Cache essential files only if full cache fails
+          const essentialFiles = ['/', '/index.html', '/dashboard.html', '/pwa/manifest.json'];
+          return cache.addAll(essentialFiles);
         });
       })
       .then(() => {
         console.log('Service Worker installed successfully');
-      })
-      .catch((error) => {
-        console.log('Cache install failed:', error);
-        // Continue anyway for PWA functionality
       })
   );
   self.skipWaiting();

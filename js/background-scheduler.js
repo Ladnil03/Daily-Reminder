@@ -10,6 +10,9 @@ class BackgroundScheduler {
     }
 
     async requestNotificationPermission() {
+        // Skip if already handled by PWA Enhanced
+        if (window.pwaEnhanced) return;
+        
         if ('Notification' in window && 'serviceWorker' in navigator) {
             const permission = await Notification.requestPermission();
             console.log('Notification permission:', permission);

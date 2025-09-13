@@ -27,7 +27,10 @@ class ServiceWorkerMessaging {
     }
 
     playNotificationSound() {
-        if (window.reminderManager) {
+        // Use PWA Enhanced sound if available, otherwise fallback
+        if (window.pwaEnhanced) {
+            window.pwaEnhanced.playNotificationSound();
+        } else if (window.reminderManager) {
             window.reminderManager.playDefaultBeep();
         }
     }
