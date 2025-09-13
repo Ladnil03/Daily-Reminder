@@ -84,12 +84,29 @@ self.addEventListener('activate', event => {
 // Background notification scheduling
 let scheduledNotifications = new Map();
 
+// Periodic Background Sync
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'daily-reminder-sync') {
+    event.waitUntil(doPeriodicSync());
+  }
+});
+
 // Background Sync
 self.addEventListener('sync', event => {
   if (event.tag === 'background-sync') {
     event.waitUntil(doBackgroundSync());
   }
 });
+
+function doPeriodicSync() {
+  return checkDueReminders()
+    .then(() => {
+      console.log('Periodic sync completed');
+    })
+    .catch(() => {
+      console.log('Periodic sync failed');
+    });
+}
 
 function doBackgroundSync() {
   return fetch('/api/sync')
@@ -100,6 +117,29 @@ function doBackgroundSync() {
     .catch(() => {
       console.log('Background sync failed');
     });
+}
+
+function checkDueReminders() {
+  return new Promise((resolve) => {
+    const reminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+    const now = Date.now();
+    const dueReminders = reminders.filter(r => 
+      new Date(r.datetime).getTime() <= now && r.isActive && !r.completed
+    );
+    
+    dueReminders.forEach(reminder => {
+      self.registration.showNotification(reminder.title, {
+        body: reminder.description || 'Reminder time!',
+        icon: '/icon-192.png',
+        badge: '/icon-96.png',
+        vibrate: [200, 100, 200],
+        requireInteraction: true,
+        tag: 'reminder-' + reminder.id
+      });
+    });
+    
+    resolve();
+  });
 }
 
 // Push notifications

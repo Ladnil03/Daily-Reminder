@@ -1,10 +1,12 @@
 {
+  "id": "daily-reminder-pwa",
   "name": "Daily Reminder",
   "short_name": "Reminder",
   "description": "Never miss important tasks with smart notifications",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
   "orientation": "any",
@@ -12,42 +14,97 @@
   "lang": "en",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%236366f1' rx='12'/%3E%3Ctext x='24' y='32' font-size='24' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
-      "sizes": "48x48",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%236366f1' rx='16'/%3E%3Ctext x='36' y='48' font-size='36' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
-      "sizes": "72x72",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%236366f1' rx='20'/%3E%3Ctext x='48' y='64' font-size='48' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
-      "sizes": "96x96",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'%3E%3Crect width='144' height='144' fill='%236366f1' rx='32'/%3E%3Ctext x='72' y='96' font-size='72' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
-      "sizes": "144x144",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1' rx='42'/%3E%3Ctext x='96' y='125' font-size='120' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1' rx='112'/%3E%3Ctext x='256' y='330' font-size='280' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO3dQW7bMBCFYQ===",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO3dQW7bMBCFYQ===",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Reminder",
+      "short_name": "Add",
+      "description": "Quickly add a new reminder",
+      "url": "/dashboard.html",
+      "icons": [
+        {
+          "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO3dQW7bMBCFYQ===",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.dailyreminder.app",
+      "id": "com.dailyreminder.app"
+    }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://api.dailyreminder.com"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/open-reminder",
+      "accept": {
+        "text/plain": [".txt"],
+        "application/json": [".json"]
+      }
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "share_target": {
+    "action": "/share-reminder",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
