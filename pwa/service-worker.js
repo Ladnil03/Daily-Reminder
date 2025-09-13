@@ -1,5 +1,5 @@
 // Service Worker for offline functionality
-const CACHE_NAME = 'daily-reminder-v2';
+const CACHE_NAME = 'daily-reminder-v3';
 const urlsToCache = [
   './',
   './index.html',
@@ -24,23 +24,14 @@ const urlsToCache = [
   './js/bulk-operations.js',
   './js/sw-register.js',
   './js/contact.js',
-  './pwa/manifest.json'
+  './js/mobile-fixes.js',
+  './pwa/manifest.json',
+  './assets/default.mp3',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
-// Install event - cache resources
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((error) => {
-        console.log('Cache install failed:', error);
-      })
-  );
-  self.skipWaiting();
-});
+
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
@@ -147,21 +138,57 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  if (event.action === 'explore') {
-    // Open the app
+  if (event.action === 'complete') {
+    // Mark reminder as complete
     event.waitUntil(
-      clients.openWindow('./dashboard.html')
+      handleReminderComplete(event.notification.data.reminderId)
     );
-  } else if (event.action === 'close') {
-    // Just close the notification
-    event.notification.close();
+  } else if (event.action === 'snooze') {
+    // Snooze for 10 minutes
+    event.waitUntil(
+      handleReminderSnooze(event.notification.data.reminderId)
+    );
   } else {
     // Default action - open the app
     event.waitUntil(
-      clients.openWindow('./')
+      clients.matchAll({ type: 'window' }).then(clientList => {
+        // Check if app is already open
+        for (let client of clientList) {
+          if (client.url.includes('dashboard.html') && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Open new window if app is not open
+        if (clients.openWindow) {
+          return clients.openWindow('./dashboard.html');
+        }
+      })
     );
   }
 });
+
+function handleReminderComplete(reminderId) {
+  return clients.matchAll().then(clientList => {
+    clientList.forEach(client => {
+      client.postMessage({
+        type: 'COMPLETE_REMINDER',
+        reminderId: reminderId
+      });
+    });
+  });
+}
+
+function handleReminderSnooze(reminderId) {
+  return clients.matchAll().then(clientList => {
+    clientList.forEach(client => {
+      client.postMessage({
+        type: 'SNOOZE_REMINDER',
+        reminderId: reminderId,
+        snoozeMinutes: 10
+      });
+    });
+  });
+}
 
 // Background notification scheduler
 let scheduledNotifications = new Map();
@@ -172,8 +199,18 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   } else if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
     scheduleBackgroundNotification(event.data.reminder, event.data.triggerTime);
+  } else if (event.data && event.data.type === 'CLEAR_NOTIFICATIONS') {
+    clearAllScheduledNotifications();
   }
 });
+
+function clearAllScheduledNotifications() {
+  scheduledNotifications.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+  });
+  scheduledNotifications.clear();
+  console.log('All scheduled notifications cleared');
+}
 
 function scheduleBackgroundNotification(reminder, triggerTime) {
   const now = Date.now();
@@ -237,33 +274,57 @@ function playNotificationSound() {
   });
 }
 
-// Check for due notifications on service worker activation
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    Promise.all([
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      }),
-      checkPendingNotifications()
-    ])
-  );
-  self.clients.claim();
+// Periodic background sync for checking reminders
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'background-sync') {
+    event.waitUntil(checkDueReminders());
+  }
 });
 
-function checkPendingNotifications() {
-  // This will be called when service worker activates
-  return new Promise((resolve) => {
-    // Check localStorage for pending notifications
-    setTimeout(() => {
-      console.log('Checking for pending notifications...');
-      resolve();
-    }, 1000);
+function checkDueReminders() {
+  return clients.matchAll().then(clientList => {
+    if (clientList.length === 0) {
+      // App is not open, check for due reminders
+      console.log('Checking for due reminders in background');
+      // This would typically fetch from a server or IndexedDB
+      // For now, we'll rely on scheduled notifications
+    }
+    return Promise.resolve();
   });
 }
+
+// Install event - cache resources
+self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Opened cache:', CACHE_NAME);
+        // Cache essential files first
+        const essentialFiles = [
+          './',
+          './index.html',
+          './login.html',
+          './register.html',
+          './dashboard.html',
+          './pwa/manifest.json'
+        ];
+        
+        return cache.addAll(essentialFiles).then(() => {
+          // Cache remaining files
+          return Promise.allSettled(
+            urlsToCache.filter(url => !essentialFiles.includes(url))
+              .map(url => cache.add(new Request(url, { cache: 'reload' })))
+          );
+        });
+      })
+      .then(() => {
+        console.log('Service Worker installed successfully');
+      })
+      .catch((error) => {
+        console.log('Cache install failed:', error);
+        // Continue anyway for PWA functionality
+      })
+  );
+  self.skipWaiting();
+});

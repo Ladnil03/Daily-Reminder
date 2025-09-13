@@ -224,8 +224,19 @@ class AuthManager {
     logout() {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userSession');
         localStorage.removeItem('backgroundReminders');
         this.currentUser = null;
+        
+        // Clear any scheduled notifications
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.active.postMessage({
+                    type: 'CLEAR_NOTIFICATIONS'
+                });
+            });
+        }
+        
         window.location.href = 'index.html';
     }
 
@@ -240,23 +251,31 @@ class AuthManager {
             
             const userData = JSON.parse(stored);
             
+            // Handle old format without timestamp
             if (!userData.timestamp) {
                 const newUserData = {
                     user: userData,
                     timestamp: Date.now(),
-                    expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
+                    expires: Date.now() + (365 * 24 * 60 * 60 * 1000) // 1 year
                 };
                 localStorage.setItem('currentUser', JSON.stringify(newUserData));
                 return userData;
             }
             
+            // Check if session expired (1 year)
             if (Date.now() > userData.expires) {
+                console.log('Session expired, logging out');
                 this.logout();
                 return null;
             }
             
+            // Extend session on activity
+            userData.expires = Date.now() + (365 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            
             return userData.user;
         } catch (e) {
+            console.log('Error getting current user:', e);
             return null;
         }
     }
@@ -266,10 +285,17 @@ class AuthManager {
         const userData = {
             user: user,
             timestamp: Date.now(),
-            expires: Date.now() + (30 * 24 * 60 * 60 * 1000)
+            expires: Date.now() + (365 * 24 * 60 * 60 * 1000) // 1 year
         };
         localStorage.setItem('currentUser', JSON.stringify(userData));
         localStorage.setItem('isLoggedIn', 'true');
+        
+        // Store user session persistently
+        localStorage.setItem('userSession', JSON.stringify({
+            userId: user.id,
+            username: user.username,
+            loginTime: Date.now()
+        }));
     }
 
     isLoggedIn() {

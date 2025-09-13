@@ -223,9 +223,7 @@ class ReminderManager {
         this.updateStats();
         
         // Schedule background notification
-        if (window.backgroundScheduler && !this.currentEditId) {
-            window.backgroundScheduler.scheduleNotification(reminderData);
-        }
+        this.scheduleBackgroundNotification(reminderData);
         
         // Update dashboard if available
         if (window.dashboardManager) {
@@ -353,6 +351,13 @@ class ReminderManager {
 
         if (dueReminders.length > 0) {
             this.storeReminders();
+        }
+    }
+
+    scheduleBackgroundNotification(reminder) {
+        if ('serviceWorker' in navigator && window.notificationManager) {
+            const triggerTime = new Date(reminder.datetime).getTime();
+            window.notificationManager.scheduleBackgroundNotification(reminder, triggerTime);
         }
     }
 
@@ -650,9 +655,7 @@ class ReminderManager {
         this.updateStats();
         
         // Schedule background notification
-        if (window.backgroundScheduler) {
-            window.backgroundScheduler.scheduleNotification(testReminder);
-        }
+        this.scheduleBackgroundNotification(testReminder);
         
         if (window.dashboardManager) {
             window.dashboardManager.refreshCurrentView();

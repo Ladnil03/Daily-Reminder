@@ -7,7 +7,9 @@ class ServiceWorkerManager {
     async init() {
         if ('serviceWorker' in navigator) {
             try {
-                const registration = await navigator.serviceWorker.register('pwa/service-worker.js');
+                const registration = await navigator.serviceWorker.register('./pwa/service-worker.js', {
+                    scope: './'
+                });
                 console.log('Service Worker registered successfully:', registration);
                 
                 // Handle updates
@@ -19,6 +21,14 @@ class ServiceWorkerManager {
                         }
                     });
                 });
+                
+                // Listen for messages from service worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'PLAY_NOTIFICATION_SOUND') {
+                        this.playNotificationSound();
+                    }
+                });
+                
             } catch (error) {
                 console.log('Service Worker registration failed:', error);
             }
@@ -27,17 +37,104 @@ class ServiceWorkerManager {
         // Handle install prompt
         this.handleInstallPrompt();
     }
+    
+    playNotificationSound() {
+        try {
+            const audio = new Audio('./assets/default.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(() => {
+                // Fallback to beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            });
+        } catch (e) {
+            console.log('Could not play notification sound:', e);
+        }
+    }
 
     handleInstallPrompt() {
-        // Disable all install prompts
+        let deferredPrompt;
+        
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            console.log('Install prompt blocked');
+            deferredPrompt = e;
+            this.showInstallButton();
         });
 
         window.addEventListener('appinstalled', (e) => {
-            console.log('App installed');
+            console.log('PWA installed successfully');
+            this.hideInstallButton();
         });
+        
+        // Handle install button click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'install-pwa-btn') {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            }
+        });
+    }
+    
+    showInstallButton() {
+        if (document.getElementById('install-pwa-btn')) return;
+        
+        const installBtn = document.createElement('button');
+        installBtn.id = 'install-pwa-btn';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installBtn.className = 'install-btn';
+        installBtn.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        `;
+        
+        installBtn.addEventListener('mouseenter', () => {
+            installBtn.style.transform = 'translateY(-2px)';
+            installBtn.style.boxShadow = '0 6px 20px rgba(99, 102, 241, 0.4)';
+        });
+        
+        installBtn.addEventListener('mouseleave', () => {
+            installBtn.style.transform = 'translateY(0)';
+            installBtn.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.3)';
+        });
+        
+        document.body.appendChild(installBtn);
+    }
+    
+    hideInstallButton() {
+        const installBtn = document.getElementById('install-pwa-btn');
+        if (installBtn) {
+            installBtn.remove();
+        }
     }
     
 

@@ -1,25 +1,42 @@
 {
-  "name": "Daily Reminder - Task Manager",
-  "short_name": "Daily Reminder",
-  "description": "A powerful offline-capable reminder and task management app",
-  "start_url": "/",
-  "scope": "/",
+  "name": "Daily Reminder",
+  "short_name": "Reminder",
+  "description": "Never miss important tasks with smart notifications",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
-  "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities", "lifestyle"],
+  "orientation": "any",
+  "categories": ["productivity", "utilities"],
   "lang": "en",
-  "dir": "ltr",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1'/%3E%3Ctext x='96' y='120' font-size='120' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%236366f1' rx='16'/%3E%3Ctext x='36' y='50' font-size='32' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%236366f1' rx='20'/%3E%3Ctext x='48' y='65' font-size='42' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "96x96",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' fill='%236366f1' rx='28'/%3E%3Ctext x='64' y='85' font-size='56' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "sizes": "128x128",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1' rx='42'/%3E%3Ctext x='96' y='125' font-size='84' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1'/%3E%3Ctext x='256' y='320' font-size='320' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1' rx='112'/%3E%3Ctext x='256' y='330' font-size='224' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -30,7 +47,7 @@
       "name": "Add Reminder",
       "short_name": "Add",
       "description": "Quickly add a new reminder",
-      "url": "/dashboard.html"
+      "url": "./dashboard.html"
     }
   ],
   "prefer_related_applications": false

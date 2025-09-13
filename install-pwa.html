@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Daily Reminder App</title>
+    <link rel="manifest" href="pwa/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .install-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+        }
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #6366f1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        h1 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .install-btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        .install-btn:hover {
+            background: #5856eb;
+            transform: translateY(-2px);
+        }
+        .install-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .features {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            color: #555;
+        }
+        .feature-icon {
+            margin-right: 10px;
+            color: #6366f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="install-card">
+        <div class="app-icon">🔔</div>
+        <h1>Install Daily Reminder</h1>
+        <p>Get the full app experience with offline access and notifications</p>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <span>Works offline</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔔</span>
+                <span>Background notifications</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <span>Fast loading</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🏠</span>
+                <span>Add to home screen</span>
+            </div>
+        </div>
+        
+        <button id="install-btn" class="install-btn" disabled>
+            Install App
+        </button>
+        <button onclick="window.location.href='index.html'" class="install-btn" style="background: #6b7280;">
+            Continue in Browser
+        </button>
+        
+        <div id="install-instructions" style="display: none; margin-top: 20px; color: #666; font-size: 14px;">
+            <p><strong>Manual Installation:</strong></p>
+            <p>• Chrome/Edge: Click the install icon in the address bar</p>
+            <p>• Safari: Tap Share → Add to Home Screen</p>
+            <p>• Firefox: Look for "Install" option in the menu</p>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+        const installInstructions = document.getElementById('install-instructions');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.disabled = false;
+            installBtn.textContent = 'Install App';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+                deferredPrompt = null;
+            } else {
+                installInstructions.style.display = 'block';
+            }
+        });
+
+        window.addEventListener('appinstalled', (e) => {
+            console.log('PWA was installed');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        });
+
+        // Show manual instructions if install prompt is not available
+        setTimeout(() => {
+            if (!deferredPrompt) {
+                installBtn.textContent = 'Show Install Instructions';
+                installBtn.disabled = false;
+            }
+        }, 2000);
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./pwa/service-worker.js');
+        }
+    </script>
+</body>
+</html>
