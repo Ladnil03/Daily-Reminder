@@ -11,24 +11,17 @@
   "categories": ["productivity", "utilities"],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1' rx='42'/%3E%3Ctext x='96' y='125' font-size='84' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%236366f1' rx='42'/%3E%3Ctext x='96' y='125' font-size='120' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1' rx='112'/%3E%3Ctext x='256' y='330' font-size='224' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%236366f1' rx='112'/%3E%3Ctext x='256' y='330' font-size='280' text-anchor='middle' fill='white'%3E🔔%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Add Reminder",
-      "short_name": "Add",
-      "description": "Quickly add a new reminder",
-      "url": "/dashboard.html"
-    }
-  ]
+
 }

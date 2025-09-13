@@ -72,7 +72,7 @@ self.addEventListener('message', event => {
       const timeoutId = setTimeout(() => {
         self.registration.showNotification(reminder.title, {
           body: reminder.description || 'Reminder time!',
-          icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="84" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
+          icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="120" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
           badge: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"%3E%3Crect width="96" height="96" fill="%236366f1" rx="20"/%3E%3Ctext x="48" y="65" font-size="42" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
           vibrate: [200, 100, 200],
           requireInteraction: true,

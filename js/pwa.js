@@ -111,7 +111,7 @@ class PWAManager {
                 if (Notification.permission === 'granted') {
                     new Notification(reminder.title, {
                         body: reminder.description || 'Reminder time!',
-                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="84" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E'
+                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="120" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E'
                     });
                 }
             }, delay);

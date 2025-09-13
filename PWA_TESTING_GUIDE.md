@@ -42,12 +42,11 @@
 3. Test with app closed (background notification)
 
 ### 5. APK Generation
-**Using PWA Builder:**
-1. Go to https://www.pwabuilder.com/
-2. Enter your app URL
-3. Click "Start" → "Build My PWA"
-4. Download Android package
-5. Install APK on Android device
+**Direct Methods (No PWA Builder):**
+1. **Android Studio WebView**: Create native Android app with WebView
+2. **Cordova**: `cordova create` → `cordova platform add android` → `cordova build`
+3. **Capacitor**: `npx cap init` → `npx cap add android` → build in Android Studio
+4. See `DIRECT_APK_GUIDE.md` for detailed instructions
 
 ## Features Working
 - ✅ Offline Support - App works without internet
