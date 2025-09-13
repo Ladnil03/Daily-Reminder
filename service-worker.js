@@ -40,7 +40,28 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => response || fetch(event.request))
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request)
+          .then(response => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+            return response;
+          })
+          .catch(() => {
+            if (event.request.destination === 'document') {
+              return caches.match('/index.html');
+            }
+          });
+      })
   );
 });
 
@@ -62,6 +83,39 @@ self.addEventListener('activate', event => {
 
 // Background notification scheduling
 let scheduledNotifications = new Map();
+
+// Background Sync
+self.addEventListener('sync', event => {
+  if (event.tag === 'background-sync') {
+    event.waitUntil(doBackgroundSync());
+  }
+});
+
+function doBackgroundSync() {
+  return fetch('/api/sync')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Background sync completed');
+    })
+    .catch(() => {
+      console.log('Background sync failed');
+    });
+}
+
+// Push notifications
+self.addEventListener('push', event => {
+  const options = {
+    body: event.data ? event.data.text() : 'New notification',
+    icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Crect width="192" height="192" fill="%236366f1" rx="42"/%3E%3Ctext x="96" y="125" font-size="120" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
+    badge: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"%3E%3Crect width="96" height="96" fill="%236366f1" rx="20"/%3E%3Ctext x="48" y="65" font-size="42" text-anchor="middle" fill="white"%3E🔔%3C/text%3E%3C/svg%3E',
+    vibrate: [200, 100, 200],
+    requireInteraction: true
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification('Daily Reminder', options)
+  );
+});
 
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
